@@ -1,0 +1,66 @@
+name: mobapp
+description: Minimal MyScan MVP
+version: 0.1.0
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  go_router: ^13.2.2
+  image_picker: ^1.0.4
+  dio: ^5.4.3
+  flutter_secure_storage: ^9.0.0
+  animations: ^2.0.11
+  flutter_svg: ^2.2.0
+  uuid: ^3.0.7
+  path_provider: ^2.1.2
+  pytorch_lite: ^4.3.2
+  flutter_dotenv: ^5.2.1
+  http: ^1.2.1        
+  share_plus: ^11.0.0
+  open_file: ^3.2.1
+
+  # локализация
+  flutter_localizations:
+    sdk: flutter
+  intl: any
+
+flutter:
+  # ← ЭТО МЕСТО ДОЛЖНО БЫТЬ НА УРОВНЕ С dependencies:, НИКАК НЕ ВНУТРИ ЕГО
+  generate: true
+
+  uses-material-design: true
+
+  assets:
+      - .env
+      - assets/reports/med_report_ru.pdf
+      - assets/reports/med_report_en.pdf
+      - assets/models/oct_model.pth
+      - assets/models/
+      - assets/models/lungs.ptl
+      - assets/models/oct.ptl
+      - assets/models/brain.ptl
+      - assets/models/lungs.pt
+      - assets/models/oct.pt
+      - assets/models/brain.pt
+      - assets/lungs.jpg
+      - assets/oct.jpg
+      - assets/brain.jpg
+      - assets/icons/logoai.png
+      - assets/icons/logomyscan.png
+      - assets/icons/info.svg
+      - assets/icons/doc.svg
+      - assets/icons/chat.svg
+      - assets/icons/home.svg
+      - assets/icons/user.svg
+
+  fonts:
+    - family: SamsungSharpSans
+      fonts:
+        - asset: assets/fonts/KZ_SamsungSharpSans.ttf
+    - family: Gothic
+      fonts:
+        - asset: assets/fonts/KZ_GOTHIC.ttf

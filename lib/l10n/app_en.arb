@@ -1,0 +1,160 @@
+{
+  "appTitle": "MyScan",
+  "homeSelectModality": "Choose imaging\nmodality:",
+  "homeDescriptionPrefix": "Our program detects most diseases with up to 97% accuracy. Read more about the spectrum of diseases ",
+  "homeDescriptionLink": "here",
+  "homeDescriptionSuffix": ".",
+  "homeLungs": "Lung CT",
+  "homeOct": "Eye OCT",
+  "homeBrain": "Brain MRI",
+
+  "modalityLungsTitle": "Lung CT scan",
+  "modalityLungsHintPrefix": "How to photograph correctly — see ",
+  "modalityLungsHintLink": "here",
+  "modalityLungsHintSuffix": ".",
+
+  "modalityOctTitle": "Eye OCT",
+  "modalityOctHintPrefix": "Shooting recommendations are available ",
+  "modalityOctHintLink": "here",
+  "modalityOctHintSuffix": ".",
+
+  "modalityBrainTitle": "Brain MRI",
+  "modalityBrainHintPrefix": "Instructions for a quality image — ",
+  "modalityBrainHintLink": "here",
+  "modalityBrainHintSuffix": ".",
+
+  "attachPhotoTitle": "Attach a photo:",
+  "analyzeButton": "Analyze",
+  "analysisError": "Analysis error: {error}",
+  "@analysisError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+"resultTitle": "Analysis result",
+  "backButton": "Go back",
+  "pillRisks": "Risks",
+  "pillPrevention": "Prevention",
+  "pillContact": "Contact a doctor",
+  "pillCauses": "Causes",
+  "infoUnavailable": "Information is not available yet.",
+  "diagnosisProbability": "{diagnosis} ({percent}%)",
+  "@diagnosisProbability": {
+    "placeholders": {
+      "diagnosis": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
+
+  "diagPneumoniaBrief": "Pneumonia is an acute inflammation of lung tissue, most often caused by bacteria or viruses. Severity depends on the pathogen type, patient age, and comorbidities.",
+  "diagPneumoniaRisks": "• Acute complications: pleurisy, lung abscess, sepsis.\n• Possible chronic outcomes: decreased lung function, bronchiectasis.\n• Especially dangerous for children under 5, the elderly, and immunocompromised people.",
+  "diagPneumoniaPrevention": "• Vaccination (pneumococcal, influenza, COVID‑19).\n• Avoid smoking, maintain regular physical activity.\n• Timely treatment of colds and ENT infections.",
+  "diagPneumoniaContact": "Fever > 38 °C for more than 3 days, shortness of breath or chest pain — contact a therapist/pulmonologist.\n\n📞 103 — emergency ambulance\n📞 Ministry of Health hotline: 8 800 080 88 87",
+  "diagPneumoniaCauses": "• Bacteria (most often Streptococcus pneumoniae, Haemophilus influenzae).\n• Viruses (influenza, SARS‑CoV‑2, etc.).\n• Atypical agents (Mycoplasma, Chlamydophila).\n• Aspiration of gastric contents.",
+
+  "diagMeningiomaBrief": "A meningioma is a benign tumor of the meninges; it grows slowly and is often found incidentally. It may cause headaches, seizures and focal neurological symptoms due to compression.",
+  "diagMeningiomaRisks": "• Brain structure compression → limb weakness, speech or vision problems.\n• Brain edema and raised intracranial pressure (headache, nausea, seizures).\n• Cranial nerve involvement in basal location.\n• Rare (< 2%) malignant transformation to atypical/anaplastic form.",
+  "diagMeningiomaPrevention": "No specific measures; however:\n• Minimize unnecessary radiation (CT without indication).\n• Manage hormone therapy with your doctor.\n• Maintain vascular/metabolic health.\n• Regular MRI screening for NF2 or prior head irradiation.",
+  "diagMeningiomaContact": "Consult a neurosurgeon/neurologist if you have:\n• Persistent progressive headaches.\n• New seizure episodes.\n• Visual/hearing disturbances or paresis.\n\n📞 Republican Neurosurgery Center: +7 7172 62‑18‑27\n📞 Emergency: 103",
+  "diagMeningiomaCauses": "• Ionizing radiation — the most proven factor.\n• Genetic syndromes (NF2).\n• Hormonal influence: 2–3× more common in women.\n• Trauma and chronic inflammation are discussed but weakly proven.\n\n⚠️ Most meningiomas are benign (Grade I) and slow-growing; management includes observation, microsurgery or radiosurgery.",
+
+  "infoTitle": "Information board",
+
+    "infoPrivacyTitle": "Privacy",
+    "infoPrivacyBody": "Privacy\n\nWe strictly follow principles of confidentiality and personal data protection. All data transferred through our platform — medical scans, reports, complaints, passwords and other user information — are stored in encrypted form and securely protected.\nOur system complies with current information security standards and the legislation of the Republic of Kazakhstan.",
+
+    "infoPhotoTitle": "Photos",
+    "infoPhotoBody": "For correct image processing and accurate diagnostics it is crucial to meet quality requirements. Please read the recommendations before uploading files.\n\n• Full frame coverage: the image must fully fit without cropped areas.\n• Lighting: take photos in good, even light. Avoid glare, shadows and overexposure.\n• File formats: PNG and JPEG (JPG) are supported.",
+
+    "infoDiseasesTitle": "Diseases",
+    "infoDiseasesBody": "Our system supports automatic recognition of a wide range of pathologies and conditions based on different medical images. The algorithms are validated against international standards and adapted to clinical practice.\n\n1. Brain MRI:\n- Pituitary adenoma\n- Glioma\n- Meningioma\n- Normal\n\n2. Eye OCT (retina):\n- Choroidal neovascularization (CNV)\n- Diabetic macular edema (DME)\n- Drusen (drusenoid dystrophy)\n- Normal\n\n3. Chest CT (lungs):\n- Pneumonia\n- Tuberculosis\n- COVID‑19\n- Normal\n\nWe regularly update and expand the list of supported conditions based on new clinical data and global medical guidelines.",
+
+    "infoLimitationsTitle": "Limitations",
+    "infoLimitationsBody": "Despite high accuracy, our system has a number of technical and clinical limitations. We strive for the most correct interpretation; however:\n- Results are for reference only and do not replace an in‑person doctor consultation.\n- The system does not detect rare or atypical pathologies outside the supported list.\n- Low‑quality, artifact‑ridden or cropped photos may be misclassified or rejected.\n- Printed scans, screenshots or distorted images (glare, overlays) may lead to incorrect results.\n\nThe user is responsible for the correctness of the uploaded image.",
+
+    "infoFaqTitle": "FAQ",
+    "infoFaqBody": "Frequently Asked Questions (FAQ)\n\n- Can I upload photos from a phone?\nYes, if quality requirements are met (see “Photos”).\n\n- Is the original scanner file required?\nNo. A clear photo of the screen is acceptable if it is sharp, uncropped and without glare.\n\n- How long does analysis take?\nUsually from a few seconds to one minute depending on server load.\n\n- Can I use old scans?\nYes, if they are of good quality and meet technical requirements.\n\n- What if I doubt the result?\nConsult a specialist. The system supports decision‑making, not final diagnosis.",
+
+    "infoValidationTitle": "Accuracy & validation",
+    "infoValidationBody": "System accuracy is confirmed by a series of validation tests on representative datasets. We use advanced deep learning and computer vision methods repeatedly verified on clinical data.\n\nIndividual models are developed for each pathology, trained on thousands of annotated images with certified physicians. Average sensitivity and specificity for major classes exceed 90%.\n\nContinuous model retraining and strict quality control ensure stability and reliability of results.",
+
+    "infoAboutTitle": "About the system",
+    "infoAboutBody": "Our platform is an intelligent clinical decision support system designed to analyse diagnostic images using artificial intelligence.\n\nThe goal is to provide doctors and patients with a preliminary analysis tool that accelerates pathology detection and improves diagnostic accuracy.\n\nThe system is adapted for various study types (MRI, CT, OCT) and can be used in clinical practice or personally.",
+      "profileTitle": "Profile",
+      "profilePersonalDataTitle": "Personal data",
+      "profileMedicalInfoTitle": "Medical information",
+      "profileStatsTitle": "MyScan statistics",
+      "profileInsuranceTitle": "Insurance",
+      "profileEmergencyContactsTitle": "Emergency contacts",
+      "profileHistoryButton": "Scan history",
+
+      "profileDOBLabel": "Date of birth",
+      "profileAgeLabel": "Age",
+      "profileGenderLabel": "Gender",
+      "profileAddressLabel": "Address",
+      "profileClinicLabel": "Assigned clinic",
+      "profileDoctorLabel": "Primary doctor",
+      "profileBloodGroupLabel": "Blood group",
+      "profileAllergiesLabel": "Allergies",
+      "profileChronicDiseasesLabel": "Chronic diseases",
+      "profileLastCheckupLabel": "Last check-up",
+      "profilePolicyLabel": "Policy",
+      "profileValidUntilLabel": "Valid until",
+      "profileMotherLabel": "Mother",
+      "profileFatherLabel": "Father",
+
+      "profileNameValue": "Alisher Omarov",
+      "profilePhoneValue": "+7 747 193 6733",
+      "profileEmailValue": "alisher.omarov@example.kz",
+      "profileDOBValue": "14 March 2006",
+      "profileAgeValue": "18 years",
+      "profileGenderValue": "male",
+      "profileAddressValue": "Almaty, Seifullin Ave. 215, apt. 48",
+      "profileClinicValue": "City Polyclinic No. 12",
+      "profileDoctorValue": "Turebaeva Zh. K. (therapist)",
+      "profileBloodGroupValue": "O (I) Rh +",
+      "profileAllergiesValue": "no data",
+      "profileChronicDiseasesValue": "bronchial asthma (mild, controlled)",
+      "profileLastCheckupValue": "12 October 2024",
+      "profilePolicyValue": "MedLife JSC No. B‑374‑221‑99",
+      "profilePolicyValidUntilValue": "31 December 2025",
+      "profileMotherValue": "Omarova Aizhan • +7 701 555 2244",
+      "profileFatherValue": "Omarov Nurlan • +7 701 888 1321",
+
+      "profileStatBrainMRI": "Brain MRI",
+      "profileStatLungCT": "Lung CT",
+      "profileStatRetinaOCT": "Retina OCT",
+      "reportsTitle": "Generate report",
+        "reportsSubtitle": "AI will format your complaints, symptoms\nand images into a clear PDF for your doctor",
+        "reportsPickImageTitle": "Choose an image:",
+        "reportsComplaintsTitle": "List your complaints:",
+        "reportsComplaintHint": "Describe symptoms…",
+        "reportsSubmitButton": "Generate",
+        "reportsEmptyError": "Please describe your symptoms",
+        "reportsOpenError": "Failed to open report: {error}",
+        "@reportsOpenError": {
+          "placeholders": {
+            "error": { "type": "String" }
+          }
+        },
+        "chatTitle": "MyScanAI",
+          "chatCloseTooltip": "Close",
+          "chatHint": "Your question…",
+          "chatError": "Error: {error}",
+          "@chatError": {
+            "placeholders": {
+              "error": { "type": "String" }
+            }
+          },
+          "chatDummy1": "Hello! I'm MyScanAI. How can I help you? 😊",
+          "chatDummy2": "Yes, passive smoking increases the risk of pneumonia. Inhaled toxic substances damage the airway lining and weaken local immunity, making it easier for pathogens to enter.",
+           "diagNormalName": "Normal",
+            "diagPneumoniaName": "Pneumonia",
+            "diagCNVName": "Choroidal neovascularization (CNV)",
+            "diagDMEName": "Diabetic macular edema (DME)",
+            "diagDrusenName": "Drusen",
+            "diagGliomaName": "Glioma",
+            "diagMeningiomaName": "Meningioma",
+            "diagPituitaryName": "Pituitary adenoma",
+            "diagNoTumorName": "No tumor"
+}
