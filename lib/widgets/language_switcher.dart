@@ -1,7 +1,6 @@
 // lib/widgets/language_switcher.dart
 import 'package:flutter/material.dart';
 import '../main.dart';
-import '../core/theme.dart'; // kBlue
 
 class LanguageSwitcher extends StatelessWidget {
   const LanguageSwitcher({super.key});
@@ -9,6 +8,7 @@ class LanguageSwitcher extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final current = Localizations.localeOf(context).languageCode;
+    final c = Theme.of(context).colorScheme;
 
     return PopupMenuButton<String>(
       tooltip: 'Language',
@@ -16,14 +16,14 @@ class LanguageSwitcher extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       onSelected: (code) => MyApp.of(context)?.setLocale(Locale(code)),
       itemBuilder: (context) => [
-        _item('en', 'English', current == 'en'),
-        _item('ru', 'Русский', current == 'ru'),
+        _item(context, 'en', 'English', current == 'en'),
+        _item(context, 'ru', 'Русский', current == 'ru'),
       ],
       child: Container(
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: kBlue, // СИНЯЯ КНОПКА
+          color: c.primary,                 // CHANGED: из темы
           shape: BoxShape.circle,
           boxShadow: const [
             BoxShadow(
@@ -34,18 +34,28 @@ class LanguageSwitcher extends StatelessWidget {
           ],
         ),
         alignment: Alignment.center,
-        child: const Icon(Icons.language, color: Colors.white, size: 22),
+        child: Icon(                        // CHANGED: без const, цвет из темы
+          Icons.language,
+          color: c.onPrimary,
+          size: 22,
+        ),
       ),
     );
   }
 
-  PopupMenuItem<String> _item(String code, String label, bool selected) {
+  PopupMenuItem<String> _item(
+    BuildContext context,
+    String code,
+    String label,
+    bool selected,
+  ) {
+    final c = Theme.of(context).colorScheme;  // CHANGED: цвет из темы
     return PopupMenuItem<String>(
       value: code,
       child: Row(
         children: [
           Expanded(child: Text(label)),
-          if (selected) const Icon(Icons.check, size: 18, color: kBlue),
+          if (selected) Icon(Icons.check, size: 18, color: c.primary),
         ],
       ),
     );

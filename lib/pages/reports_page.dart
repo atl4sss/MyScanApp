@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../core/theme.dart';
+// REMOVED: import '../core/theme.dart';
 import '../l10n/app_localizations.dart';
 
 class ReportsPage extends StatefulWidget {
@@ -35,7 +35,7 @@ class _ReportsPageState extends State<ReportsPage> {
     final loc = AppLocalizations.of(context)!;
     setState(() => _sending = true);
     try {
-      // NEW: выбираем нужный файл по языку
+      // LEAVE: выбираем нужный файл по языку
       final lang = Localizations.localeOf(context).languageCode;
       final assetPath = (lang == 'en')
           ? 'assets/reports/med_report_en.pdf'
@@ -45,7 +45,7 @@ class _ReportsPageState extends State<ReportsPage> {
       final bytes = data.buffer.asUint8List();
 
       final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/med_report.pdf'); // имя во временной папке
+      final file = File('${tempDir.path}/med_report.pdf');
       await file.writeAsBytes(bytes, flush: true);
 
       await OpenFile.open(file.path);
@@ -54,183 +54,136 @@ class _ReportsPageState extends State<ReportsPage> {
         SnackBar(content: Text(loc.reportsOpenError(e.toString()))),
       );
     } finally {
-      setState(() => _sending = false);
+      if (mounted) setState(() => _sending = false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final loc = AppLocalizations.of(context)!;
+    final t = Theme.of(context).textTheme;       // CHANGED
+    final c = Theme.of(context).colorScheme;     // CHANGED
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // логотип + название
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Image.asset('assets/icons/logomyscan.png', width: 56),
-                  Text(
-                    loc.appTitle,
-                    style: const TextStyle(
-                      fontFamily: 'SamsungSharpSans',
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      color: kBlue,
+    return Scaffold(                              // CHANGED
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // ── Шапка ───────────────────────────────────
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.asset('assets/icons/logomyscan.png', width: 56),
+                    Text(
+                      loc.appTitle,
+                      style: t.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: c.onSurface,
+                      ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // ── Заголовок ───────────────────────────────
+                Text(
+                  loc.reportsTitle,
+                  style: t.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // ── Подпись ─────────────────────────────────
+                Text(
+                  loc.reportsSubtitle,
+                  style: t.bodyMedium?.copyWith(
+                    color: c.onSurfaceVariant,
+                    height: 1.40,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Divider(height: 1, color: c.outlineVariant),
+
+                const SizedBox(height: 16),
+
+                // ── Блок: прикрепить изображение ────────────
+                Text(
+                  loc.reportsPickImageTitle,
+                  style: t.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 10),
+
+                Center(
+                  child: FilledButton.tonal(             // CHANGED
+                    onPressed: _pickImage,
+                    style: FilledButton.styleFrom(
+                      shape: const CircleBorder(),
+                      padding: const EdgeInsets.all(16),
+                    ),
+                    child: const Icon(Icons.attach_file, size: 26),
+                  ),
+                ),
+
+                if (_file != null) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    _file!.name,
+                    style: t.bodySmall?.copyWith(color: c.onSurfaceVariant),
                   ),
                 ],
-              ),
-              const SizedBox(height: 24),
 
-              // заголовок
-              Text(
-                loc.reportsTitle,
-                style: const TextStyle(
-                  fontFamily: 'SamsungSharpSans',
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                  color: kTextBlack,
-                ),
-              ),
-              const SizedBox(height: 8),
+                const SizedBox(height: 24),
 
-              // подпись
-              Text(
-                loc.reportsSubtitle,
-                style: const TextStyle(
-                  fontFamily: 'Gothic',
-                  fontSize: 14,
-                  color: kGreyTxt,
-                  height: 1.35,
-                ),
-              ),
-              const SizedBox(height: 12),
-              const Divider(),
-
-              const SizedBox(height: 12),
-              Text(
-                loc.reportsPickImageTitle,
-                style: const TextStyle(
-                  fontFamily: 'SamsungSharpSans',
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: kTextBlack,
-                ),
-              ),
-              const SizedBox(height: 8),
-              GestureDetector(
-                onTap: _pickImage,
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                  child: const Icon(Icons.attach_file,
-                      color: Colors.white, size: 28),
-                ),
-              ),
-              if (_file != null) ...[
-                const SizedBox(height: 10),
+                // ── Блок: жалобы ────────────────────────────
                 Text(
-                  _file!.name,
-                  style: const TextStyle(
-                    fontFamily: 'Gothic',
-                    fontSize: 14,
-                    color: kGreyTxt,
-                  ),
+                  loc.reportsComplaintsTitle,
+                  style: t.titleLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
-              ],
+                const SizedBox(height: 10),
 
-              const SizedBox(height: 24),
-              Text(
-                loc.reportsComplaintsTitle,
-                style: const TextStyle(
-                  fontFamily: 'SamsungSharpSans',
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  color: kTextBlack,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.black54, width: 1),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: TextField(
+                // CHANGED: полагаемся на InputDecorationTheme (мягко, без жёсткой рамки)
+                TextField(
                   controller: _complaint,
                   maxLines: 6,
-                  style: const TextStyle(
-                    fontFamily: 'Gothic',
-                    fontSize: 14,
-                    color: kTextBlack,
-                  ),
                   decoration: InputDecoration(
-                    border: InputBorder.none,
                     hintText: loc.reportsComplaintHint,
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 28),
-              Center(
-                child: SizedBox(
-                  width: 180,
-                  height: 40,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kBlue,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    onPressed: (_sending)
-                        ? null
-                        : () {
-                      if (_complaint.text.trim().isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(loc.reportsEmptyError),
-                          ),
-                        );
-                      } else {
-                        _sendReport();
-                      }
-                    },
-                    child: _sending
-                        ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                        : Text(
-                      loc.reportsSubmitButton,
-                      style: const TextStyle(
-                        fontFamily: 'SamsungSharpSans',
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                const SizedBox(height: 28),
+
+                // ── Кнопка отправки ─────────────────────────
+                Center(
+                  child: SizedBox(
+                    width: 200, height: 48,                 // CHANGED
+                    child: FilledButton(                    // CHANGED
+                      onPressed: _sending
+                          ? null
+                          : () {
+                              if (_complaint.text.trim().isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(loc.reportsEmptyError)),
+                                );
+                              } else {
+                                _sendReport();
+                              }
+                            },
+                      child: _sending
+                          ? const SizedBox(
+                              width: 20, height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                            )
+                          : Text(loc.reportsSubmitButton),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

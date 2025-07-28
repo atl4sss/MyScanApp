@@ -31,7 +31,7 @@ class ModalityTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(kRadius),
                   gradient: LinearGradient(
                     begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.35)],
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.25)],
                   ),
                 ),
               ),

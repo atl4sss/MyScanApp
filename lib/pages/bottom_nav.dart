@@ -3,142 +3,158 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
-// ─── визуальные константы ─────────────────────────────────────────────────────
-const _navHeight   = 64.0;           // высота «капсулы»
-const _fabSize     = 64.0;           // ⟵ БОЛЬШЕ: диаметр круглой кнопки‑домика
-const _fabIconSize = 36.0;           // ⟵ БОЛЬШЕ: размер SVG внутри FAB
-const _radius      = 18.0;           // радиус скругления бара
-const _iconSize    = 32.0;           // боковые иконки
-const _centerGap   = _fabSize * .8;  // ⟵ ширина «пустоты» под FAB
-const _shadowColor = Color(0x33000000); // тень под FAB
+/// Порядок: 0=info, 1=reports, 2=home (круглая), 3=chat, 4=profile
+const _routes = ['/info', '/reports', '/home', '/chat', '/profile'];
+const _assets = [
+  'assets/icons/info.svg',
+  'assets/icons/doc.svg',
+  'assets/icons/home.svg',  // центр (в кружке)
+  'assets/icons/chat.svg',
+  'assets/icons/user.svg',
+];
 
-/// позиция → (маршрут, svg‑иконка)
-const _tabs = <int, ({String route, String asset})>{
-  0: (route: '/info'   , asset: 'assets/icons/info.svg' ),
-  1: (route: '/reports', asset: 'assets/icons/doc.svg'  ),
-  2: (route: '/home'   , asset: 'assets/icons/home.svg' ), // FAB
-  3: (route: '/chat'   , asset: 'assets/icons/chat.svg' ),
-  4: (route: '/profile', asset: 'assets/icons/user.svg' ),
-};
-
-// ─── основной виджет ──────────────────────────────────────────────────────────
 class BottomNav extends StatefulWidget {
   final Widget child;
   const BottomNav({super.key, required this.child});
 
-  @override State<BottomNav> createState() => _BottomNavState();
+  @override
+  State<BottomNav> createState() => _BottomNavState();
 }
 
 class _BottomNavState extends State<BottomNav> {
-  int _idx = 2; // активная вкладка (домик по умолчанию)
+  // размеры
+  static const _barHeight = 72.0;
+  static const _radius    = 26.0;
+  static const _iconSize  = 30.0;
+  static const _fabSize   = 66.0;
+
+  // более яркий «приятный» синий для FAB
+  static const Gradient _fabGradient = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF4F8CFF), Color(0xFF2F6BFF)],
+  );
+
+  int _idx = 2; // активна «Home»
 
   void _go(int i) {
     if (_idx == i) return;
     setState(() => _idx = i);
-    context.go(_tabs[i]!.route);
+    context.go(_routes[i]);
   }
 
-  Widget _navIcon(int i) {
+  Widget _sideIcon(int i, ColorScheme c) {
     final active = _idx == i;
-    return IconButton(
-      onPressed: () => _go(i),
-      splashRadius: _iconSize + 8,
-      iconSize: _iconSize,
-      icon: SvgPicture.asset(
-        _tabs[i]!.asset,
-        width : _iconSize,
-        height: _iconSize,
-        colorFilter: ColorFilter.mode(
-          active ? Colors.white : Colors.white70,
-          BlendMode.srcIn,
-        ),
+
+    // ярко‑синий для активной, более светлый — для неактивной
+    final Color iconColor = active
+        ? const Color(0xFF2F6BFF) // насыщённый
+        : Color.lerp(const Color(0xFF2F6BFF), Colors.white, 0.35)!; // мягкий голубой
+
+    return InkResponse(
+      onTap: () => _go(i),
+      radius: _iconSize + 10,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TweenAnimationBuilder<double>(
+            duration: const Duration(milliseconds: 180),
+            curve: Curves.easeOut,
+            tween: Tween(begin: 1, end: active ? 1.08 : 1.0),
+            builder: (context, scale, child) => Transform.scale(
+              scale: scale,
+              child: child,
+            ),
+            child: SvgPicture.asset(
+              _assets[i],
+              width: _iconSize,
+              height: _iconSize,
+              colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+            ),
+          ),
+          const SizedBox(height: 6),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 180),
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: active ? const Color(0xFF2F6BFF) : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final c = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: widget.child,
-
-      // ── нижняя навигация ──────────────────────────────────────
       bottomNavigationBar: SafeArea(
         top: false,
         child: Stack(
-          clipBehavior: Clip.none,
           alignment: Alignment.bottomCenter,
+          clipBehavior: Clip.none,
           children: [
-            // ── капсула ─────────────────────────────────────────
+            // ── белая капсула ────────────────────────────────────────────────
             Container(
-              height: _navHeight,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft : Radius.circular(_radius),
-                  topRight: Radius.circular(_radius),
-                ),
-                gradient: LinearGradient(
-                  begin : Alignment.centerLeft,
-                  end   : Alignment.centerRight,
-                  colors: [Color(0xFF3793FF), Color(0xFF006BFF)],
-                ),
-              ),
-              foregroundDecoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft : Radius.circular(_radius),
-                  topRight: Radius.circular(_radius),
-                ),
-                gradient: LinearGradient(
-                  begin : Alignment.topCenter,
-                  end   : Alignment.bottomCenter,
-                  colors: [Colors.white24, Colors.transparent],
-                  stops : [0, .06],
-                ),
+              height: _barHeight,
+              margin: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(_radius),
+                // лёгкий голубой бордер вместо серого
+                border: Border.all(color: const Color(0xFF2F6BFF).withOpacity(.16), width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 24,
+                    offset: const Offset(0, 12),
+                  ),
+                ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _navIcon(0),
-                  _navIcon(1),
-                  SizedBox(width: _centerGap), // ⟵ увеличенный промежуток
-                  _navIcon(3),
-                  _navIcon(4),
+                  _sideIcon(0, c),
+                  _sideIcon(1, c),
+                  SizedBox(width: _fabSize * .98), // место под центр
+                  _sideIcon(3, c),
+                  _sideIcon(4, c),
                 ],
               ),
             ),
 
-            // ── «плавающая» круглая кнопка‑домик ────────────────
+            // ── центральная круглая кнопка (БЕЗ «глоу» под ней) ──────────────
             Positioned(
-              // «утопили» примерно на 40 % высоты, чтобы выглядело как в макете
-              top: -_fabSize * 0.3,
+              top: -_fabSize * 0.35,
               child: GestureDetector(
                 onTap: () => _go(2),
-                behavior: HitTestBehavior.opaque,
                 child: Container(
-                  width : _fabSize,
+                  width: _fabSize,
                   height: _fabSize,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _idx == 2 ? const Color(0xFF0057FF)
-                        : const Color(0xFF2E7BFF),
-                    boxShadow: const [
+                    gradient: _fabGradient,
+                    boxShadow: [
+                      // оставил лишь аккуратную тень для объёма
                       BoxShadow(
-                        color: _shadowColor,
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
+                        color: Color(0x33000000),
+                        blurRadius: 18,
+                        offset: Offset(0, 8),
                       ),
                     ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(11.0),
-                    child: SvgPicture.asset(
-                      _tabs[2]!.asset,
-                      width : _fabIconSize,
-                      height: _fabIconSize,
-                      colorFilter: const ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
-                      ),
-                    ),
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(
+                    _assets[2],
+                    width: 30,
+                    height: 30,
+                    colorFilter:
+                    const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                   ),
                 ),
               ),

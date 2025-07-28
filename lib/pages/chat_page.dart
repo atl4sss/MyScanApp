@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../core/chat_service.dart';
 import '../core/theme.dart';
-import '../l10n/app_localizations.dart'; // NEW
+import '../l10n/app_localizations.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -19,11 +19,10 @@ class _ChatPageState extends State<ChatPage> {
   final _scrollCtl = ScrollController();
   final _messages = <({String role, String text})>[];
   bool _busy = false;
-
   int _dummyStep = 0;
 
   Future<void> _ask() async {
-    final loc = AppLocalizations.of(context)!; // NEW
+    final loc = AppLocalizations.of(context)!;
     final prompt = _input.text.trim();
     if (prompt.isEmpty || _busy) return;
 
@@ -36,15 +35,16 @@ class _ChatPageState extends State<ChatPage> {
 
     late String answer;
     if (_dummyStep < 2) {
-      // CHANGED: локализованные ответы
       await Future.delayed(const Duration(milliseconds: 300));
-      answer = _dummyStep == 0 ? loc.chatDummy1 : loc.chatDummy2;
+      answer = _dummyStep == 0
+          ? loc.chatDummy1
+          : loc.chatDummy2;
       _dummyStep++;
     } else {
       try {
         answer = await ChatService().ask(prompt);
       } catch (e) {
-        answer = loc.chatError(e.toString()); // CHANGED
+        answer = loc.chatError(e.toString());
       }
     }
 
@@ -77,37 +77,39 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!; // NEW
+    final loc = AppLocalizations.of(context)!;
+    final c = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7FC),
+      backgroundColor: c.background,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: kBlue,
-        title: Row(
-          children: [
-            Image.asset('assets/icons/logoai.png', width: 32, height: 32),
-            const SizedBox(width: 8),
-            Text(
-              loc.chatTitle, // CHANGED
-              style: const TextStyle(
-                fontFamily: 'SamsungSharpSans',
-                color: Colors.white,
-              ),
-            ),
-          ],
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: kBlue),
+          onPressed: () => context.go('/home'),
+        ),
+        title: Text(
+          loc.chatTitle,
+          style: const TextStyle(
+            fontFamily: 'SamsungSharpSans',
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: kBlue, // брендовый синий
+          ),
         ),
         actions: [
           IconButton(
-            tooltip: loc.chatCloseTooltip, // CHANGED
-            icon: const Icon(Icons.close, color: Colors.white),
+            icon: Icon(Icons.close, color: kBlue),
+            tooltip: loc.chatCloseTooltip,
             onPressed: () => context.go('/home'),
-          )
+          ),
         ],
       ),
       body: Column(
         children: [
-          // сообщения
+          // ── Сообщения ────────────────────────────────────────────────
           Expanded(
             child: ListView.builder(
               controller: _scrollCtl,
@@ -117,19 +119,27 @@ class _ChatPageState extends State<ChatPage> {
                 final m = _messages[i];
                 final isUser = m.role == 'user';
                 return Align(
-                  alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+                  alignment:
+                  isUser ? Alignment.centerRight : Alignment.centerLeft,
                   child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.75),
                     decoration: BoxDecoration(
                       color: isUser ? kBlue : Colors.white,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(18),
+                        topRight: const Radius.circular(18),
+                        bottomLeft: Radius.circular(isUser ? 18 : 4),
+                        bottomRight: Radius.circular(isUser ? 4 : 18),
+                      ),
                       boxShadow: const [
                         BoxShadow(
                           color: Colors.black12,
-                          blurRadius: 3,
-                          offset: Offset(0, 1),
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
                         )
                       ],
                     ),
@@ -137,7 +147,9 @@ class _ChatPageState extends State<ChatPage> {
                       m.text,
                       style: TextStyle(
                         fontFamily: 'Gothic',
+                        fontSize: 14,
                         color: isUser ? Colors.white : kTextBlack,
+                        height: 1.4,
                       ),
                     ),
                   ),
@@ -146,13 +158,14 @@ class _ChatPageState extends State<ChatPage> {
             ),
           ),
 
-          // поле ввода
+          // ── Поле ввода ───────────────────────────────────────────────
           SafeArea(
             top: false,
-            child: DecoratedBox(
-              decoration: const BoxDecoration(color: Colors.white),
+            child: Container(
+              color: Colors.white,
+              padding:
+              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
                     child: TextField(
@@ -162,23 +175,45 @@ class _ChatPageState extends State<ChatPage> {
                       textInputAction: TextInputAction.send,
                       onSubmitted: (_) => _ask(),
                       decoration: InputDecoration(
+                        filled: true,
+                        fillColor: c.surface,
+                        hintText: loc.chatHint,
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 10),
-                        hintText: loc.chatHint, // CHANGED
-                        border: InputBorder.none,
+                            horizontal: 16, vertical: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide:
+                          BorderSide(color: c.outlineVariant),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide:
+                          BorderSide(color: c.outlineVariant),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(24),
+                          borderSide: BorderSide(color: kBlue, width: 1.6),
+                        ),
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: _busy ? null : _ask,
-                    icon: _busy
-                        ? const SizedBox(
-                      width: 18,
-                      height: 18,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: kBlue),
-                    )
-                        : const Icon(Icons.send, color: kBlue),
+                  const SizedBox(width: 8),
+                  Material(
+                    color: kBlue,
+                    shape: const CircleBorder(),
+                    child: IconButton(
+                      onPressed: _busy ? null : _ask,
+                      icon: _busy
+                          ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                          : const Icon(Icons.send, color: Colors.white),
+                    ),
                   ),
                 ],
               ),

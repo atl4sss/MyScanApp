@@ -7,12 +7,12 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../core/inference.dart';
-import '../core/theme.dart';
 import 'result_page.dart';
-import '../l10n/app_localizations.dart'; // NEW
-import '../widgets/language_switcher.dart'; // опционально, если нужен переключатель
+import '../l10n/app_localizations.dart';
+// REMOVED: import '../core/theme.dart';  // CHANGED: больше не нужен, используем Theme.of
+// REMOVED: import '../widgets/language_switcher.dart'; // не используется на странице
 
-// CHANGED: убираем текстовые строки из карты — оставляем только asset
+// LEAVE: карта ассетов
 const _assets = <String, String>{
   'lungs': 'assets/lungs.jpg',
   'oct': 'assets/oct.jpg',
@@ -65,8 +65,8 @@ class _ModalityPageState extends State<ModalityPage> {
         ),
       );
     } catch (e) {
-      final loc = AppLocalizations.of(context)!; // NEW
-      setState(() => _err = loc.analysisError(e.toString())); // CHANGED
+      final loc = AppLocalizations.of(context)!;
+      setState(() => _err = loc.analysisError(e.toString()));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -74,9 +74,9 @@ class _ModalityPageState extends State<ModalityPage> {
 
   @override
   Widget build(BuildContext context) {
-    final loc = AppLocalizations.of(context)!; // NEW
+    final loc = AppLocalizations.of(context)!;
 
-    // CHANGED: выбираем строки по type через switch
+    // CHANGED: все строки/ассеты выбираем как у вас, только далее стилизуем темой
     late final String title;
     late final String hintPrefix;
     late final String hintLink;
@@ -109,170 +109,145 @@ class _ModalityPageState extends State<ModalityPage> {
         throw ArgumentError('Unknown modality: ${widget.type}');
     }
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // логотип + имя + (опц.) переключатель
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Image.asset('assets/icons/logomyscan.png', width: 56),
-                Text(
-                  loc.appTitle, // CHANGED
-                  style: const TextStyle(
-                    fontFamily: 'SamsungSharpSans',
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: kBlue,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
+    final t = Theme.of(context).textTheme;       // CHANGED
+    final c = Theme.of(context).colorScheme;     // CHANGED
 
-            // заголовок
-            Text(
-              title, // CHANGED
-              style: const TextStyle(
-                fontFamily: 'SamsungSharpSans',
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                color: kTextBlack,
-              ),
-            ),
-            const SizedBox(height: 4),
-
-            // подпись‑ссылка
-            Text.rich(
-              TextSpan(
-                style: const TextStyle(
-                  fontFamily: 'Gothic',
-                  fontSize: 13,
-                  color: kGreyTxt,
-                ),
+    return Scaffold(                               // NEW: единообразно со всеми экранами
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Хедер ───────────────────────────────────────
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TextSpan(text: hintPrefix), // CHANGED
-                  TextSpan(
-                    text: hintLink, // CHANGED
-                    style: const TextStyle(
-                      color: kBlue,
-                      decoration: TextDecoration.underline,
+                  Image.asset('assets/icons/logomyscan.png', width: 56),
+                  Text(
+                    loc.appTitle,
+                    style: t.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: c.onSurface,
                     ),
-                    recognizer: TapGestureRecognizer()..onTap = () {},
                   ),
-                  TextSpan(text: hintSuffix), // CHANGED
                 ],
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 12),
 
-            // превью картинки
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: kBlue, width: 2),
+              // ── Заголовок ───────────────────────────────────
+              Text(
+                title,
+                style: t.headlineMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  height: 1.15,
+                ),
               ),
-              clipBehavior: Clip.hardEdge,
-              child: Image.asset(asset, height: 180, fit: BoxFit.cover), // CHANGED
-            ),
-            const SizedBox(height: 16),
-            const Divider(),
+              const SizedBox(height: 4),
 
-            Text(
-              loc.attachPhotoTitle, // CHANGED
-              style: const TextStyle(
-                fontFamily: 'SamsungSharpSans',
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: kTextBlack,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // кнопка‑скрепка
-            Center(
-              child: GestureDetector(
-                onTap: _busy ? null : _pick,
-                child: Container(
-                  width: 72,
-                  height: 72,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF1E88E5), Color(0xFF42A5F5)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+              // ── Подпись со ссылкой ─────────────────────────
+              Text.rich(
+                TextSpan(
+                  style: t.bodySmall?.copyWith(color: c.onSurfaceVariant),
+                  children: [
+                    TextSpan(text: hintPrefix),
+                    TextSpan(
+                      text: hintLink,
+                      style: t.bodySmall?.copyWith(
+                        color: c.primary,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      recognizer: TapGestureRecognizer()..onTap = () {
+                        // TODO: открыть ссылку
+                      },
                     ),
+                    TextSpan(text: hintSuffix),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // ── Превью образца снимка ──────────────────────
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),     // CHANGED: мягкий радиус
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: c.outlineVariant), // CHANGED: тонкая обводка темы
+                  ),
+                  child: Image.asset(
+                    asset,
+                    height: 180,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Divider(),
+
+              // ── Заголовок "Attach a photo" ─────────────────
+              Text(
+                loc.attachPhotoTitle,
+                style: t.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 16),
+
+              // ── Кнопка-скрепка (мягкая) ────────────────────
+              Center(
+                child: FilledButton.tonal(
+                  onPressed: _busy ? null : _pick,          // CHANGED
+                  style: FilledButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(22),
                   ),
                   child: _busy
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            strokeWidth: 3,
-                            color: Colors.white,
-                          ),
+                      ? const SizedBox(
+                          width: 26, height: 26,
+                          child: CircularProgressIndicator(strokeWidth: 3),
                         )
-                      : const Icon(
-                          Icons.attach_file,
-                          size: 34,
-                          color: Colors.white,
-                        ),
+                      : const Icon(Icons.attach_file, size: 28),
                 ),
               ),
-            ),
-            if (_picked != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Center(
-                  child: Text(
-                    _picked!.name,
-                    style: const TextStyle(
-                      fontFamily: 'Gothic',
-                      fontSize: 13,
-                      color: kGreyTxt,
+
+              if (_picked != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Center(
+                    child: Text(
+                      _picked!.name,
+                      style: t.bodySmall?.copyWith(color: c.onSurfaceVariant),
                     ),
                   ),
                 ),
-              ),
-            if (_err != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Text(
-                  _err!,
-                  style: const TextStyle(color: Colors.red, fontSize: 13),
-                ),
-              ),
-            const Spacer(),
 
-            // кнопка «Анализ»
-            SizedBox(
-              width: double.infinity,
-              height: 44,
-              child: ElevatedButton(
-                onPressed: (_bytes == null || _busy) ? null : _analyse,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kBlue,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22),
+              if (_err != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    _err!,
+                    style: t.bodySmall?.copyWith(color: c.error),
                   ),
                 ),
-                child: _busy
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 3,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Text(loc.analyzeButton), // CHANGED
+
+              const Spacer(),
+
+              // ── Кнопка "Analyze" (первичная) ───────────────
+              SizedBox(
+                width: double.infinity,
+                height: 48,                                   // CHANGED: чуть выше, мягче
+                child: FilledButton(
+                  onPressed: (_bytes == null || _busy) ? null : _analyse,
+                  child: _busy
+                      ? const SizedBox(
+                          width: 22, height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 3, color: Colors.white),
+                        )
+                      : Text(loc.analyzeButton),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
